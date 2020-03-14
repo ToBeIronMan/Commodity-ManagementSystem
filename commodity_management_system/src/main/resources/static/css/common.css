@@ -1,0 +1,102 @@
+
+.login_wrap{
+	background: url(../img/logo_bg.jpg) no-repeat center;
+	background-size: 100%;
+}
+.logo{
+	width: 500px;
+	height: 150px;
+	margin: auto;
+	position: relative;
+	text-align: center;
+	/* background: url(../img/icon.png) no-repeat center; */
+}
+.login_box{
+	border-radius:20px;
+	width: 360px;
+	background: #FFFFFF;
+	margin: 0px auto;
+}
+.login_title{
+	font-size: 25px;
+	text-align: center;
+	color: #FF7F50;
+	padding: 15px 0;
+	width: 300px;
+	margin: 0 auto;
+
+}
+.form_text_ipt{
+	border-radius:20px;
+	width: 300px;
+	height: 40px;
+	border: solid 1px #CCCCCC;
+	margin: 20px auto 0 auto;
+	background: #FFFFFF;
+}
+.form_check_ipt{
+	width: 300px;
+	margin:  10px auto;
+	overflow: hidden;
+	display: flex;
+	justify-content: space-between;
+}
+.form_text_ipt input{
+	width: 200px;
+	height: 30px;
+	margin: 5px;
+	border: none;
+
+	font-family: "微软雅黑";
+	font-size: 15px;
+	color: #666;
+}
+.check_left label{
+	cursor: pointer;
+}
+.check_left label input{
+	position: relative;
+	top: 2px;
+}
+.form_btn{
+	width: 300px;
+	height: 40px;
+	border-radius:20px;
+	text-align:center;
+	margin:  10px auto;
+}
+.form_btn button{
+	width: 80%;
+	height: 80%;
+	border-radius:20px;
+	border: none;
+	position: center;
+	text-align:center;
+	margin-top: 20px;
+
+	color: #FFFFFF;
+	font-size: 14px;
+	background: #FF7F50;
+	cursor: pointer;
+}
+.form_reg_btn{
+	width: 300px;
+	margin-top:30px;
+	text-align: end;
+	font-size: 14px;
+	color: #666;
+}
+#login {
+	width: 450px;
+	height: 100px;
+	margin: 126px auto;
+	}
+
+#btn {
+	margin-left: 5px;
+	margin-top: 0px;
+	width: 70px;
+	height: 25px;
+	font-size: 13px;
+	}
+

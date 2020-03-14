@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>用户管理</title>
+     <link rel="stylesheet" th:href="@{/dist/css/bootstrap.min.css}" >
+</head>
+
+<body>
+
+<div class="container">
+    <div>
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div >
+                    <ul  class="nav navbar-nav" style="margin-top:-8px;" >
+                        <li><a href="/userlist">用户管理</a></li>
+                        <li><a  data-toggle="modal" data-target="#addModal" >添加用户</a></li>
+                    </ul>
+                    <form action="searchuser">
+                    <div class="input-group"  style="width:200px;margin-top:13px;">
+                   
+            <input type="text" name="searchwords"class="form-control">
+            <span class="input-group-addon">
+            <input type="submit" value="搜索" style="border-width :0px;">
+            </span>
+            
+        </div>
+        </form>
+        <div style="margin-top:0px;">
+    <a th:href="${#request.getContextPath()}+'/index'" style="display: inline-block; float: right">返回</a>
+    <!--/*@thymesVar id="userName" type=""*/-->
+    <p th:text="${userName}" style="display: inline-block; float: right"></p>
+    <p style="display: inline-block; float: right">您好，</p>
+</div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div>
+        <h2>用户管理</h2>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table_list">
+            <thead>
+            <tr>
+                <th width="15%">编号</th>
+                <th width="15%">用户名</th>
+                <th width="15%">密码</th>
+                <th width="15%">电话</th>
+                <th width="15%">删除</th>
+                <th width="15%">编辑</th>
+                <th width="15%">添加权限</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user:${users}">
+                <td height="40px" th:text="${user.userId}" ></td>
+                <td th:text="${user.userName}"></td>
+                <td th:text="${user.userPassword}"></td>
+                <td th:text="${user.userPhone}"></td>
+                <td><a  class="delete_a" th:value="${user.userId}">删除</a></td>
+                 <td>
+                 <a  data-toggle="modal" data-target="#myModal" 
+                 th:value="${user.userId}"
+                 th:value1="${user.userName}"
+                 th:value2="${user.userPassword}"
+                     th:value3="${user.userPhone}"
+                 onclick="values($(this).attr('value'),$(this).attr('value1'),$(this).attr('value2'),$(this).attr('value3'))">编辑</a>
+                 </td>
+                <td>
+                    <a  data-toggle="modal"
+                        data-target="#myModaltwo"
+                        th:value4="${user.userId}"
+                        onclick="Tvalues($(this).attr('value4'))"
+                    >添加权限</a>
+                </td>
+            </tr>
+           
+            </tbody>
+            
+        </table>
+        <ul id="pageLimit" class="pagination" ></ul>
+<input type="hidden"  id="pageNum" name="pageNum" th:value="${pageInfo.pageNum}" />
+<input type="hidden" id="pages" name="pages" th:value="${pageInfo.pages}" />
+
+    </div>
+</div>
+<input name="rootUrl" id="rootUrl"  style="display:none;" th:value="${#request.contextPath}">
+      <script th:src="@{/dist/js/jquery-2.2.3.min.js}"></script>
+<script th:src="@{/dist/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/bootstrap-paginator.min.js}"></script>
+
+<script>
+    var contextPath =$("#rootUrl").val();
+    $('#pageLimit').bootstrapPaginator({
+        currentPage: $("#pageNum").val(),
+        totalPages: $("#pages").val(),
+        size: "normal",
+        bootstrapMajorVersion: 3,
+        alignment: "right",
+        numberOfPages: 6,
+        itemTexts: function (type, page, current) {
+            switch (type) {
+                case "first": return "首页";
+                case "prev": return "上一页";
+                case "next": return "下一页";
+                case "last": return "末页";
+                case "page": return page;
+            }
+        },
+        onPageClicked: function (event, originalEvent, type, page){//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+            window.location.href = contextPath+"/listorsearch?pageNum=" + page;
+        }
+    });
+    $(function(){
+        $(".delete_a").click(function(){
+            var userId=$(this).attr("value");
+            if(confirm("确认删除吗？")){
+                window.location.href=contextPath+"/userdelete?id=" + userId;
+                return ;
+            }
+        });
+    });
+    $(function(){
+        $('myModal').modal("hide");
+    });
+    function values(ID,ID1,ID2,ID3){
+
+        $('#updateid').val(ID);
+        $('#updateusername').val(ID1);
+        $('#updatepassword').val(ID2);
+        $('#updatephone').val(ID3);
+    }
+    function Tvalues(ID){
+
+        $('#permission_id').val(ID);
+
+    }
+    function targetto(id){
+        $("#myModaltwo").modal({
+            url: "showPermission?id="+id
+        });
+    }
+
+</script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
+            </div>
+            <form th:action="${#request.contextPath}+'/updateuser'">
+            
+            <div class="modal-body">
+            
+            <input type="hidden" id='updateid' name='updateid' />
+           <div class="input-group">
+			<span class="input-group-addon"> 用户名</span>
+			<input type="text" class="form-control" id="updateusername"name="updateusername">
+		</div>
+                                                  
+            <br/>
+            <br/>
+            <div class="input-group">
+			<span class="input-group-addon"> 密码 </span>
+			<input type="text" class="form-control" id="updatepassword" name="updatepassword">
+		</div>
+                <br/>
+                <br/>
+                <div class="input-group">
+                    <span class="input-group-addon"> 电话</span>
+                    <input type="text" class="form-control" id="updatephone" name="updatephone">
+                </div>
+             <br>
+            
+           </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary" >提交更改</button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="myModaltwo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabeltwo">修改用户权限</h4>
+            </div>
+            <form th:action="${#request.contextPath}+'/updatePermission'">
+
+                <div class="modal-body">
+
+                    <!--/*@thymesVar id="permission" type=""*/-->
+                    <input type="hidden"  id='permission_id' name='permission_id' >
+                    <div class="input-group">
+                        <span class="input-group-addon">查看权限</span>
+                        <input type="text" class="form-control" id="permission_look"name="permission_look" >
+                    </div>
+
+                    <br/>
+                    <br/>
+                    <div class="input-group">
+                        <span class="input-group-addon"> 添加权限</span>
+                        <input type="text" class="form-control" id="permission_add" name="permission_add" >
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="input-group">
+                        <span class="input-group-addon"> 更新权限</span>
+                        <input type="text" class="form-control" id="permission_update" name="permission_update">
+                    </div>
+                    <br>
+                    <br/>
+                    <div class="input-group">
+                        <span class="input-group-addon"> 删除权限</span>
+                        <input type="text" class="form-control" id="permission_delete" name="permission_delete"  >
+                    </div>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" >提交更改</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="addmyModalLabel">添加用户</h4>
+            </div>
+            <form th:action="${#request.contextPath}+'/adduser'">
+            
+            <div class="modal-body">
+            
+           
+           <div class="input-group">
+			<span class="input-group-addon"> 用户名</span>
+			<input type="text" class="form-control" name="addusername">
+		</div>
+                                                  
+            <br/>
+            <br/>
+            <div class="input-group">
+			<span class="input-group-addon"> 密码 </span>
+			<input type="text" class="form-control"  name="addpassword">
+		</div>
+                <br/>
+                <br/>
+                <div class="input-group">
+                    <span class="input-group-addon"> 电话 </span>
+                    <input type="text" class="form-control"  name="addphone">
+                </div>
+             <br>
+            
+           </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary" >添加</button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+</html>
